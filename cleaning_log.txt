@@ -1,0 +1,13 @@
+Loaded posts: 12360 rows, 8 cols
+Loaded users: 1500 rows, 5 cols
+users table needed no cleaning, verified clean on load.
+Dropped 360 duplicate post_id rows (kept first occurrence).
+Normalized timestamp to one datetime format. Rows that still failed to parse: 0.
+platform: filled 1784 missing values as 'Unknown'.
+text_content: converted 23 literal 'NULL'-style strings to real NaN.
+text_content: unescaped HTML entities in 328 rows.
+text_content: 1711 rows are still genuinely missing. Leaving them as NaN since fabricating post text isn't allowed.
+likes: 509 negative values (impossible) converted to NaN before imputing.
+likes: imputed 2323 missing/negative values using the platform median (flagged in the likes_imputed column).
+
+Saved cleaned_posts.csv (12000 rows) and cleaned_users.csv (1500 rows).
