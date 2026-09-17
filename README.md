@@ -27,3 +27,41 @@ Requires `pandas`, `numpy`.
 
 ## Key finding
 Engagement metrics (likes/shares/comments) show near-zero correlation with each other or with follower count, consistent with the dataset being synthetically generated rather than reflecting real engagement dynamics. Full details in `eda_report.md`.
+
+
+
+## Round 2 — NLP Sentiment Classification
+
+Dataset 2 was delivered as a deliberately obfuscated PDF (`Labeled_Social_NLP_Training_Data.pdf`):
+each field was rendered as a separate overlapping text object at a fixed column position, so any
+normal copy-paste or PDF text extraction interleaves the characters into garbage. Recovered all
+9,000 rows cleanly by re-separating columns using their true fixed x-coordinates.
+
+### Files
+- `extract_dataset.py` — recovers the clean dataset from the obfuscated PDF
+- `recovered_dataset_raw.csv` — 9,000 rows, zero nulls, zero duplicates, balanced 3-class sentiment
+- `train_pipeline.py` — preprocessing, TF-IDF, model comparison, training, evaluation
+- `sentiment_model.pkl` / `tfidf_vectorizer.pkl` — trained Logistic Regression model + vectorizer
+- `confusion_matrix.png` — visual evaluation output
+- `evaluation_metrics_report.pdf` — model comparison, per-class metrics, confusion matrix
+- `round2_technical_report.pdf` — full technical writeup (problem definition, preprocessing,
+  model selection, training methodology, evaluation, confusion matrix, error analysis)
+
+### Task
+3-class sentiment classification (Positive / Negative / Neutral) on social media posts.
+Compared Multinomial Naive Bayes, Logistic Regression, and Linear SVM on TF-IDF features
+(unigrams + bigrams). Logistic Regression selected: macro-F1 0.642, accuracy 64.1% on a
+1,800-post held-out test set.
+
+### Key finding
+Errors concentrate almost entirely on the Neutral class being confused with Positive/Negative
+and vice versa; Positive-vs-Negative confusion is rare. The model struggles specifically with
+implicit sentiment (sarcasm, understatement, context-dependent tone) that a bag-of-words TF-IDF
+representation has no way to capture. Full breakdown in `round2_technical_report.pdf`.
+
+### How to run
+```bash
+python3 extract_dataset.py   # recovers recovered_dataset_raw.csv from the PDF
+python3 train_pipeline.py    # trains and evaluates the model
+```
+Requires `pandas`, `scikit-learn`, `nltk`, `pdfplumber`, `joblib`.
